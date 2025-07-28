@@ -1,0 +1,179 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Docker & Docker-Compose Presentation</title>
+
+  <!-- Reveal.js core CSS -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.5.0/dist/reveal.css">
+  <!-- Reveal.js theme (choose: black / white / league / beige ...) -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.5.0/dist/theme/white.css" id="theme">
+
+  <!-- Animate.css for simple element animations -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+  <!-- Prism.js for code highlighting -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/themes/prism-tomorrow.min.css">
+  <!-- Custom styles -->
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="reveal">
+    <div class="slides">
+      <!-- Slide 1: Title -->
+      <section class="title-slide" data-auto-animate>
+        <h1 class="animate__animated animate__fadeInDown">Docker &amp; Docker-Compose</h1>
+        <h3 class="animate__animated animate__fadeInUp animate__delay-1s">Zamonaviy Deploy va Development</h3>
+        <p class="animate__animated animate__fadeInUp animate__delay-2s">Muallif: Sizning Ismingiz · <span id="date-span"></span></p>
+        <img class="docker-logo animate__animated animate__zoomIn animate__delay-2s" src="https://www.docker.com/wp-content/uploads/2022/03/Moby-logo.png" alt="Docker logo" style="height:180px;">
+      </section>
+
+      <!-- Slide 2: Problem Statement -->
+      <section data-auto-animate>
+        <h2 class="animate__animated animate__fadeInLeft">Muammo: “Works on my machine…”</h2>
+        <div class="two-col">
+          <img src="https://i.imgflip.com/7qh7iz.jpg" alt="Works on my machine meme" style="max-height:320px" class="animate__animated animate__fadeInLeft animate__delay-1s"/>
+          <ul class="animate__animated animate__fadeInRight animate__delay-1s">
+            <li>Muhit nomuvofiqligi (library, OS)</li>
+            <li>Qo‘lbola konfiguratsiya va deploy</li>
+            <li>Scale qilish qiyin</li>
+            <li>Debug &amp; rollback murakkab</li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- Slide 3: Docker nima taklif qiladi? -->
+      <section data-auto-animate>
+        <h2>Docker nimani taklif qiladi?</h2>
+        <div class="diagram">
+          <img src="https://miro.medium.com/v2/resize:fit:800/1*utpFS3yOTYYYrH8n2cUQYw.png" alt="Container diagram" style="max-height:300px;">
+        </div>
+        <ul class="fragment">
+          <li>Portativlik — har qanday xostda bir xil ishlaydi</li>
+          <li>Izolyatsiya — library konfliktlari yo‘q</li>
+          <li>Tez deploy — sekundlarda ishga tushadi</li>
+        </ul>
+      </section>
+
+      <!-- Slide 4: Docker arxitekturasi -->
+      <section data-auto-animate>
+        <h2>Docker arxitekturasi</h2>
+        <img src="https://mermaid.ink/svg/pako:eNptUMtugzAM_JWR3nE1NsV2ame5XeHpaVkVnURQEIm90xP07UHz6ulZkWYcLdam3Zv3xe9XI9M3n5DPRMOuddasuN6GWaIw-mpYZ39iz1EXZ3vC0a7O3kKm3pNdgLbePfPNJ6KvwMxttjtSG5mLUkGmT0XqdVSNSpSlKhrAaYsJYkaFGrvHefoxsKyKYVF3PARtJqkW3NuM9sZjh5K3zDvKKSOatdfDwqfYYr9kzz7QnBERulk7GV0-B0tEXD6pwYSEgTjMBArU5YaczeYSNlBhK05egSK-ggr9GNfkgu0Co_nYqlUWe-aj9zV9UkzKtm_0oWpJqoMlthp_PSStFqlT8b-ykjjut8rNVcJxAreTMZGVbXO5fk6bfjZWH9wA3XB83Q" alt="Docker architecture" style="max-height:340px;">
+        <p class="small">Daemon ⇄ CLI ⇄ Registry (Docker Hub)</p>
+      </section>
+
+      <!-- Slide 5: Image vs Container -->
+      <section data-auto-animate>
+        <h2>Image vs Container</h2>
+        <div class="two-col">
+          <div>
+            <h3>Image</h3>
+            <ul>
+              <li>Read-only shablon</li>
+              <li>Versionlab / tag</li>
+            </ul>
+          </div>
+          <div>
+            <h3>Container</h3>
+            <ul>
+              <li>Runtime instance</li>
+              <li>Izolyatsiya + FHS</li>
+            </ul>
+          </div>
+        </div>
+        <pre><code class="language-bash"># Image-dan container yaratish
+docker run --name my-nginx -p 80:80 nginx:latest</code></pre>
+      </section>
+
+      <!-- Slide 6: Asosiy Docker buyruqlari -->
+      <section data-auto-animate>
+        <h2>Asosiy Docker buyruqlari</h2>
+        <pre class="typewriter"><code class="language-bash">docker build -t my-app .
+docker run -d -p 8080:80 my-app
+docker ps
+docker logs my-app
+docker exec -it my-app /bin/sh</code></pre>
+        <p class="small">💡 CLI buyruqlariga e’tibor bering!</p>
+      </section>
+
+      <!-- Slide 7: Docker-Compose kirish -->
+      <section data-auto-animate>
+        <h2>Docker-Compose</h2>
+        <ul>
+          <li>Ko‘plab service’larni orkestratsiya</li>
+          <li>Yagona <code>docker-compose.yml</code> fayl</li>
+          <li>Networking, volumes, environment</li>
+        </ul>
+        <img src="https://www.composerize.com/images/docker-compose-diagram.png" alt="Compose diagram" style="max-height:280px;">
+      </section>
+
+      <!-- Slide 8: Compose misol -->
+      <section data-auto-animate>
+        <h2>Compose misol (web + db)</h2>
+        <pre><code class="language-yaml">version: "3.9"
+services:
+  web:
+    image: nginx
+    ports:
+      - "8080:80"
+    volumes:
+      - ./html:/usr/share/nginx/html:ro
+  db:
+    image: postgres:15
+    environment:
+      POSTGRES_PASSWORD: example</code></pre>
+        <p><code class="language-bash">docker compose up -d</code> → services parallel ishga tushadi</p>
+      </section>
+
+      <!-- Slide 9: Real case study -->
+      <section data-auto-animate>
+        <h2>Case Study: Microservices</h2>
+        <img src="https://mermaid.ink/svg/pako:eNptUMuO3CAM_BWR5RXrNuzDUquW_usrxcZbKYmqK5E5wm4xwO4If74ekOPnJEHhsgU6H50pPt7v0XMdIIngiJnp3pjQiMsGPwz8HdgXwQ960_KWy3p8J9L8mml39daA5BbwbtG1LXZZUpHeAu-AT_gGhW6gvXyHvhiAO_7G7RG8OpgkyeRFy4IOs1VK3TkPpqUZzKJJ_claDOVkahkrVb5ZAkR9HccLjmoEUW6lNw_Qhf4Dim6oz1IDvlyqs0lQyPuWTkJ7mCFjaRFN7pX6VDNZi1xGE-RTjtETz_ReaJERXN8S2vZvomrdLA3vFgQPclY1X4x5yefFn612gn5QhfDwQ8p03u5udNv8X4oHflLdcMu_3rV4kMuaz1Vct_nvTsU2UjO7TN4pbZ5dS0Z4QXzB1ftLlcYrhSBYqDzYNCt5CY-WPoHNnIttQ" alt="Microservice diagram" style="max-height:320px;">
+        <p class="small">CI/CD: GitHub Actions → Docker Hub → Production</p>
+      </section>
+
+      <!-- Slide 10: Keng tarqalgan xatolar -->
+      <section data-auto-animate>
+        <h2>Keng tarqalgan xatolar</h2>
+        <ul>
+          <li><strong>Port already in use</strong> → boshqa port mapping</li>
+          <li><strong>Permission denied</strong> → volume permission / sudo</li>
+          <li><strong>Image pull failed</strong> → internet / auth token</li>
+          <li><strong>Cannot connect to DB</strong> → depends_on &amp; healthchecks</li>
+        </ul>
+      </section>
+
+      <!-- Slide 11: Yakun -->
+      <section data-auto-animate>
+        <h2>Yakun &amp; Tavsiyalar</h2>
+        <ul>
+          <li>Official image’lardan foydalaning</li>
+          <li>Tag’lar: <code>:alpine</code>, <code>:slim</code></li>
+          <li>Security scanning (Trivy, Snyk)</li>
+          <li>Keyingi qadam: Kubernetes, Swarm</li>
+        </ul>
+      </section>
+
+      <!-- Slide 12: Savollar & Confetti -->
+      <section data-auto-animate>
+        <h2>Savollar?</h2>
+        <p>Kontakt: <a href="https://github.com/yourname">github.com/yourname</a></p>
+        <img src="https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=https://github.com/yourname" alt="QR code" />
+        <p class="small">Rahmat! 🎉</p>
+      </section>
+
+    </div>
+  </div>
+
+  <!-- Libraries -->
+  <script src="https://cdn.jsdelivr.net/npm/reveal.js@4.5.0/dist/reveal.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/reveal.js@4.5.0/plugin/highlight/highlight.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/components/prism-core.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+  <!-- Confetti -->
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
+  <!-- Custom script -->
+  <script src="main.js"></script>
+
+</body>
+</html>
